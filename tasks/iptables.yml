@@ -1,0 +1,33 @@
+---
+# obligatory iptables to make this setup work
+#iptables -t nat -A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to 178.62.96.32
+#iptables -I INPUT -p $PROTOCOL --dport $PORT -j ACCEPT
+#iptables -I FORWARD -s 10.8.0.0/24 -j ACCEPT
+#iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+- name: Set NAT for the VPN subnet
+  iptables:
+   table: nat
+   chain: POSTROUTING
+   source: "{{ server_network }}/24"
+   destination: "! {{ server_network }}/24"
+   jump: SNAT
+   to_source: "{{ server_ip }}"
+  notify: "iptables-save ovpn"
+  when: ansible_virtualization_type != "docker"
+
+- name: Enable protocol, allow port
+  iptables:
+   chain: INPUT
+   protocol: "{{ server_protocol }}"
+   destination_port: "{{ server_port }}"
+   jump: ACCEPT
+  notify: "iptables-save ovpn"
+  when: ansible_virtualization_type != "docker"
+
+- name: Enable traffic from vpn subnet
+  iptables:
+   chain: FORWARD
+   source: "{{ server_network }}/24"
+   jump: ACCEPT
+  notify: "iptables-save ovpn"
+  when: ansible_virtualization_type != "docker"

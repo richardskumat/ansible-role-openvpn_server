@@ -1,0 +1,9 @@
+---
+- name: Create client-common.txt from template
+  template:
+    src: clientcommon.j2
+    dest: /etc/openvpn/client-common.txt
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes

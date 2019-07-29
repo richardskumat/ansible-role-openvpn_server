@@ -1,0 +1,27 @@
+port {{ server_port }}
+proto {{ server_protocol }}
+dev tun
+sndbuf 0
+rcvbuf 0
+ca {{ easy_rsa_key_dir }}/ca.crt
+cert {{ easy_rsa_key_dir }}/server.crt
+key {{ easy_rsa_key_dir }}/server.key
+dh "{{ easy_rsa_key_dir }}/dh{{ easy_rsa_key_size }}.pem"
+auth SHA512
+tls-auth {{ easy_rsa_key_dir }}/ta.key 0
+topology subnet
+server {{ server_network }} {{ server_network_netmask }}
+ifconfig-pool-persist ipp.txt
+push "redirect-gateway def1 bypass-dhcp"
+push "dhcp-option DNS {{ server_dns1 }}"
+push "dhcp-option DNS {{ server_dns2 }}"
+keepalive 10 120
+cipher AES-256-CBC
+user {{ server_user }}
+group {{ server_group }}
+persist-key
+persist-tun
+status {{ server_logfile }}
+verb 3
+crl-verify {{ easy_rsa_key_dir }}/crl.pem
+#client-to-client

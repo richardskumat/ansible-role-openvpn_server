@@ -1,0 +1,10 @@
+---
+- name: Copy remote ovpn files to local tmp
+  fetch:
+   src: /root/{{ item }}.ovpn
+   dest: ~/tmp/ovpn-certs/{{ item }}.ovpn
+   validate_checksum: yes
+   flat: yes
+  with_items:
+  - "{{ easy_rsa_clients }}"
+  when: ansible_virtualization_type != "docker"

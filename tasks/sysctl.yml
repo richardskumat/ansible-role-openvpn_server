@@ -1,0 +1,14 @@
+---
+# sysctl file
+- name: set ip forwarding to 1
+  shell: echo 1 > /proc/sys/net/ipv4/ip_forward
+  when: ansible_virtualization_type != "docker"
+
+- name: copy sysctl conf for ip forwarding
+  copy:
+   src: files/30-openvpn-forward.conf
+   dest: /etc/sysctl.d/30-openvpn-forward.conf
+   owner: root
+   mode: 0644
+   backup: no
+  when: ansible_virtualization_type != "docker"

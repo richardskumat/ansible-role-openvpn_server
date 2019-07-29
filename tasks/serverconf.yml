@@ -1,0 +1,10 @@
+---
+- name: Create server.conf from template
+  template:
+    src: serverconf.j2
+    dest: /etc/openvpn/server.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify: restart openvpn

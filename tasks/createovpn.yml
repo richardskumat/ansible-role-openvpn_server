@@ -1,0 +1,83 @@
+---
+
+# have to use shell or command
+- name: Copy client common to /root
+  copy:
+   src: "/etc/openvpn/client-common.txt"
+   dest: "/root/{{ item }}.ovpn"
+   owner: root
+   group: root
+   mode: 0644
+   backup: yes
+   remote_src: yes
+  with_items:
+  - "{{ easy_rsa_clients }}"
+  notify: restart openvpn
+
+# let the ugly shell commands commence
+##########
+- name: Open <ca> tag
+  shell: echo "<ca>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Add CA cert file to client ovpns
+  shell: cat {{ easy_rsa_key_dir }}/ca.crt >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Close </ca> tag
+  shell: echo "</ca>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+###############
+
+- name: Open <cert> tag
+  shell: echo "<cert>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Add the client crt file to client ovpn
+  shell: cat {{ easy_rsa_key_dir }}/{{ item }}.crt  >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Close </cert> tag
+  shell: echo "</cert>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+#######
+
+- name: Open <key> tag
+  shell: echo "<key>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Add the client key file to client ovpn
+  shell: cat {{ easy_rsa_key_dir }}/{{ item }}.key  >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Close </key> tag
+  shell: echo "</key>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+##########
+
+- name: Open <tls-auth> tag
+  shell: echo "<tls-auth>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Add the tls-auth file to client ovpn
+  shell: cat {{ easy_rsa_key_dir }}/ta.key  >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"
+
+- name: Close </tls-auth> tag
+  shell: echo "</tls-auth>" >> /root/{{ item }}.ovpn
+  with_items:
+  - "{{ easy_rsa_clients }}"

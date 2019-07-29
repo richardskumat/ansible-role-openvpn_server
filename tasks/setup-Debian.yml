@@ -1,0 +1,10 @@
+---
+- name: Install openvpn packages for Debian
+  apt:
+    name:
+      - openvpn
+      - iptables
+      - openssl
+      - ca-certificates
+      - easy-rsa
+    state: present

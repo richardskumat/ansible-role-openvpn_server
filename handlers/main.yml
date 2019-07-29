@@ -1,0 +1,27 @@
+---
+- name: restart openvpn
+  service:
+   name: "{{ openvpn }}"
+   state: restarted
+   enabled: yes
+  when: ansible_virtualization_type != "docker"
+
+- name: enable netfilter-persistent
+  service:
+   name: netfilter-persistent
+   state: restarted
+   enabled: yes
+  listen: "iptables-save ovpn"
+  when: ansible_virtualization_type != "docker"
+
+
+# this probably conflicts with generic-iptables
+#- name: save iptables rules (Debian/Ubuntu and CentOS/RHEL/Fedora)
+#  shell: "iptables-save >> /etc/iptables/rules.v4"
+#  when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+#  listen: "iptables-save ovpn"
+
+#- name: save iptables rules (Debian/Ubuntu and CentOS/RHEL/Fedora)
+#  shell: "ip6tables-save >> /etc/iptables/rules.v6"
+#  when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+#  listen: "iptables-save ovpn"

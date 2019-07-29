@@ -1,0 +1,30 @@
+---
+easy_rsa_ca_dir: /etc/openvpn/easy-rsa
+easy_rsa_key_dir: /etc/openvpn/easy-rsa/keys
+
+server_ip: "{{ ansible_default_ipv4.address }}"
+server_port: 1194
+server_protocol: udp
+server_network: 10.8.0.0
+server_network_netmask: 255.255.255.0
+server_dns1: 1.1.1.1
+#server_dns2: 8.8.8.8
+server_dns2: 1.0.0.1
+# user to drop privilegdes to
+server_user: nobody
+# this should be an if conditional  based on deb/el, since groups differ(nogroup/nobody)
+server_group: nogroup
+#when:
+#  - ansible_os_family == 'Debian'
+#server_group: nobody
+#when:
+#  - ansible_os_family == 'RedHat'
+server_logfile: openvpn-status.log
+# the server.service is a var
+# could be wtf.service
+# but then /etc/openvpn/wtf.conf would be req to exist
+# plus whatever extra keys for wtf in /etc/openvpn/easy-rsa/keys
+# hardcode this for the time being
+openvpn: 'openvpn@server.service'
+
+
