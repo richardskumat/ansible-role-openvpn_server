@@ -33,8 +33,7 @@ test_d9:
   variables:
     MOLECULE_DISTRO: "debian:9"
   script:
-    - molecule converge || true
-    - molecule test || true
+    - molecule test
 
 # d10 comes with easyrsa 3.0.6 which I don't have any tasks for in this role
 #test_d10:
@@ -42,5 +41,4 @@ test_d9:
 #  variables:
 #    MOLECULE_DISTRO: "debian:10"
 #  script:
-#    - molecule converge || true
-#    - molecule test || true
+#    - molecule test
