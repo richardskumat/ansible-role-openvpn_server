@@ -5,19 +5,23 @@ services: docker
 
 env:
   global:
-    # https://docs.docker.com/engine/api/
-    - DOCKER_API_VERSION: 1.38
     - ROLE_NAME: ansible-role-openvpn_server
     - GALAXY_USERNAME: richardskumat
     - GALAXY_ROLENAME: ansible_role_openvpn_server
   matrix:
-    - MOLECULE_DISTRO: debian:9
-    # # d10 comes with easyrsa 3.0.6 which I don't have any tasks for in this role
-    #- MOLECULE_DISTRO: debian:10
+    - MOLECULE_DISTRO: qwe1/docker-debian:9-molecule
+    - MOLECULE_DISTRO: qwe1/docker-debian:10-molecule
+
+before_install:
+  # https://docs.travis-ci.com/user/docker/
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
 
 install:
   # Install test dependencies.
-  - pip3 install ansible molecule docker
+  - pip3 install ansible==2.9.12 molecule docker ansible-lint
 
 before_script:
   # Use actual Ansible Galaxy role name for the project directory.
